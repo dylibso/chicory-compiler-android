@@ -2,11 +2,39 @@
 
 ## Installing
 
-The experimental Chicory Android compiler is currently available through the [GitHub Package Registry](https://docs.github.com/en/enterprise-server@3.15/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry).
+The experimental Chicory Android compiler is currently available through the [GitHub Package Registry](https://docs.github.com/en/enterprise-server@3.15/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry).
+
+### Gradle
+
+
+In your `settings.gradle.kts`:
+
+```kotlin
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/dylibso/chicory-compiler-android")
+        credentials {
+            username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+        }
+    }
+}
+```
+
+where USERNAME is your GitHub username, and TOKEN is a [Classic Token](https://github.com/settings/tokens). You can configure them in your `gradle.properties` or set the `USERNAME` and `TOKEN` environment variables.
+
+Then add the dependency to your `build.gradle.kts`:
+
+```
+dependencies {
+    implementation("com.dylibso.chicory:android-aot:0.0.1")
+}
+```
 
 ### Maven
 
-Configure Maven. Create a `settings.xml` file alongside your `pom.xml` or just add to your `~/.m2/settings.xml`:
+[Configure Maven](https://docs.github.com/en/enterprise-server@3.15/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry). 
+Create a `settings.xml` file alongside your `pom.xml` or just add to your `~/.m2/settings.xml`:
 
 ```xml
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
@@ -28,7 +56,7 @@ Configure Maven. Create a `settings.xml` file alongside your `pom.xml` or just a
         </repository>
         <repository>
           <id>github</id>
-          <url>https://maven.HOSTNAME/OWNER/REPOSITORY</url>
+          <url>https://maven.pkg.github.com/dylibso/chicory-compiler-android</url>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
@@ -56,38 +84,13 @@ Now you can depend on the package in your `pom.xml`:
  <dependency>
     <groupId>com.dylibso.chicory</groupId>
     <artifactId>android-aot</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>0.0.1</version>
   </dependency>
 </dependencies>
 ```
 
-### Gradle
+If you are using a local `settings.xml`, just run `mvn -s settings.xml <command>`.
 
-https://docs.github.com/en/enterprise-server@3.15/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry
-
-In your `settings.gradle.kts`:
-
-```kotlin
-repositories {
-    maven {
-        url = uri("https://REGISTRY_URL/OWNER/REPOSITORY")
-        credentials {
-            username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-            password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
-        }
-    }
-}
-```
-
-where USERNAME is your GitHub username, and TOKEN is a [Classic Token](https://github.com/settings/tokens). You can configure them in your `gradle.properties` or set the `USERNAME` and `TOKEN` environment variables.
-
-Then add the dependency to your `build.gradle.kts`:
-
-```
-dependencies {
-    implementation("com.dylibso.chicory:android-aot:999-SNAPSHOT")
-}
-```
 
 ## Using the Android Chicory Compiler
 
